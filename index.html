@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirect Page</title>
+    <style>
+        /* Reset dan gaya dasar */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: radial-gradient(circle, #1E3C72, #2A5298);
+            color: white;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #cccccc;
+        }
+        button {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffffff;
+            background: linear-gradient(90deg, #4CAF50, #43A047);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(90deg, #66BB6A, #4CAF50);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+        .loader {
+            display: none;
+            border: 5px solid #ffffff;
+            border-top: 5px solid #4CAF50;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome!</h1>
+        <p>Click the button below to begin your journey.</p>
+        <button id="startButton" onclick="startRedirect()">Start</button>
+        <div class="loader" id="loader"></div>
+    </div>
+
+    <script>
+        function startRedirect() {
+            const url = "https://medicare-peoples-fiction-examined.trycloudflare.com"; // Link cloudflared
+            const startButton = document.getElementById('startButton');
+            const loader = document.getElementById('loader');
+            const container = document.querySelector('.container');
+
+            // Nonaktifkan tombol dan tampilkan loader
+            startButton.style.display = 'none';
+            loader.style.display = 'block';
+            container.querySelector('p').textContent = "Checking server status...";
+
+            // Lakukan pengecekan apakah server aktif menggunakan metode GET
+            fetch(url)
+                .then(response => {
+                    console.log(response); // Menambahkan log untuk debug
+                    if (response.ok) {
+                        // Jika server aktif, arahkan ke link
+                        container.querySelector('p').textContent = "Redirecting...";
+                        setTimeout(() => window.location.href = url, 1500);
+                    } else {
+                        // Jika server tidak aktif, tampilkan pop-up
+                        showError();
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error); // Menambahkan log untuk error
+                    // Jika terjadi error (server down), tampilkan pop-up
+                    showError();
+                });
+        }
+
+        function showError() {
+            const container = document.querySelector('.container');
+            container.innerHTML = `
+                <h1>Server Down</h1>
+                <p>Sorry, the link is currently unavailable. Please try again later.</p>
+                <button onclick="location.reload()">Retry</button>
+            `;
+        }
+    </script>
+</body>
+</html>
